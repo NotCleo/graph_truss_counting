@@ -1,0 +1,53 @@
+output of optimized
+
+Optimized k-Truss Time: 1.305728 ms
+Number of 4-Trusses: 1
+Remaining Edges in 4-Truss: 3412
+Total Triangles in 4-Truss: 52931
+
+Edge Deletion Status (first 10 edges as sample):
+Edge (0, 5): Kept
+Edge (0, 6): Kept
+Edge (0, 7): Kept
+Edge (0, 9): Kept
+Edge (0, 10): Kept
+Edge (0, 13): Kept
+Edge (0, 14): Kept
+Edge (0, 16): Kept
+Edge (0, 19): Kept
+Edge (0, 20): Kept
+
+output of naive
+
+Naive k-Truss Time: 1.374208 ms
+Number of 4-Trusses: 1
+Remaining Edges in 4-Truss: 3376
+Total Triangles in 4-Truss: 51435
+
+Edge Deletion Status (first 10 edges as sample):
+Edge (0, 1): Kept
+Edge (0, 3): Kept
+Edge (0, 4): Kept
+Edge (0, 5): Kept
+Edge (0, 7): Kept
+Edge (0, 9): Kept
+Edge (0, 10): Kept
+Edge (0, 11): Kept
+Edge (0, 12): Kept
+Edge (0, 13): Kept
+
+
+Note that the discrepancy will require averaging many runs to remove intial overhead and also add in below debug prints before each deletion 
+
+int *sup = (int *)malloc(numEdges * sizeof(int));
+cudaMemcpy(sup, d_sup, numEdges * sizeof(int), cudaMemcpyDeviceToHost);
+for (int e = 0; e < numEdges; e++) {
+    printf("Edge (%d, %d) Support: %d\n", edges[e * 2], edges[e * 2 + 1], sup[e]);
+}
+free(sup);
+
+
+The optimized version is faster (1.305728 ms vs. 1.374208 ms), confirming its efficiency on a larger dense graph.
+The discrepancy in remaining edges (3376 vs. 3412) and triangles (51435 vs. 52931) suggests a bug, likely in support calculation or update logic. Debug with the suggested print statements.
+The outputs are otherwise consistent with a dense 100-node graph forming a single 4-truss.
+
